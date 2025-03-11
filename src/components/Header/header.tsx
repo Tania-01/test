@@ -4,6 +4,7 @@ import CategoryDropdown from "./DropDown";
 const Header = () => {
 return (
     <div>
+
         <CategoryDropdown/>
     </div>
 )

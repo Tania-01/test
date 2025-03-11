@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RecipeCard from "./Recipe";
-import Pagination from "../../pagination/Pagination";
+import Pagination from "../pagination/Pagination";
 
 
 const Recipes = () => {

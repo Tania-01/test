@@ -53,6 +53,8 @@ const CategoryDropdown = () => {
                     </option>
                 ))}
             </select>
+            <Link to={'/recipes'}>MainPage</Link >
+            <Link to={'/select-recipes'}>RecipeSelectionPage</Link >
 
             {isLoading ? (
                 <div>Loading meals...</div>
