@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { mealServices } from '../../services/recipeService';
-import { useNavigate } from 'react-router-dom';
 
 interface Recipe {
     idMeal: string;
@@ -15,7 +14,6 @@ const RecipeSelectionPage = () => {
     const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecipes = async () => {
@@ -34,39 +32,33 @@ const RecipeSelectionPage = () => {
     }, []);
 
     const handleAddToCart = (recipe: Recipe) => {
-        setSelectedRecipes((prevSelected) => [...prevSelected, recipe]); // Додаємо рецепт до вибраного кошика
+        setSelectedRecipes((prevSelected) => {
+            // Уникаємо дублювання однакових рецептів у вибраному списку
+            return prevSelected.some((r) => r.idMeal === recipe.idMeal)
+                ? prevSelected
+                : [...prevSelected, recipe];
+        });
     };
-
-    const handleGoToCart = () => {
-        navigate('/cart');
-    };
-
 
     const generateIngredientList = () => {
-        const ingredients: { [key: string]: string } = {};
+        const ingredientsMap = new Map<string, number>();
+
         selectedRecipes.forEach((recipe) => {
-            recipe.ingredients.forEach((ingredient) => {
-                if (ingredients[ingredient.name]) {
-                    ingredients[ingredient.name] = ingredients[ingredient.name] + ', ' + ingredient.quantity;
-                } else {
-                    ingredients[ingredient.name] = ingredient.quantity;
-                }
+            recipe.ingredients?.forEach((ingredient) => {
+                const quantity = parseFloat(ingredient.quantity) || 0; // Конвертація в число
+                ingredientsMap.set(ingredient.name, (ingredientsMap.get(ingredient.name) || 0) + quantity);
             });
         });
-        return Object.entries(ingredients).map(([name, quantity]) => (
+
+        return [...ingredientsMap.entries()].map(([name, quantity]) => (
             <li key={name}>
                 {name}: {quantity}
             </li>
         ));
     };
 
-    if (loading) {
-        return <p>Loading recipes...</p>;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
+    if (loading) return <p>Loading recipes...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div>
@@ -86,6 +78,7 @@ const RecipeSelectionPage = () => {
                     </ul>
                 )}
             </div>
+
             <h2>Selected Recipes</h2>
             <div>
                 {selectedRecipes.length === 0 ? (
@@ -99,7 +92,7 @@ const RecipeSelectionPage = () => {
                                     <p>{recipe.strInstructions}</p>
                                     <h4>Ingredients:</h4>
                                     <ul>
-                                        {recipe.ingredients.map((ingredient, index) => (
+                                        {recipe.ingredients?.map((ingredient, index) => (
                                             <li key={index}>
                                                 {ingredient.name}: {ingredient.quantity}
                                             </li>
@@ -113,9 +106,6 @@ const RecipeSelectionPage = () => {
                     </div>
                 )}
             </div>
-            <button onClick={handleGoToCart}>
-                Go to Cart ({selectedRecipes.length} Recipes)
-            </button>
         </div>
     );
 };

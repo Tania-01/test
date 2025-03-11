@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",  // Замість es5 використовуйте es2015 або вище
     "lib": [
       "dom",
       "dom.iterable",
