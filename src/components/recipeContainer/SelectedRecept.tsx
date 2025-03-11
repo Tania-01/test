@@ -33,7 +33,7 @@ const RecipeSelectionPage = () => {
 
     const handleAddToCart = (recipe: Recipe) => {
         setSelectedRecipes((prevSelected) => {
-            // Уникаємо дублювання однакових рецептів у вибраному списку
+         
             return prevSelected.some((r) => r.idMeal === recipe.idMeal)
                 ? prevSelected
                 : [...prevSelected, recipe];
@@ -45,7 +45,7 @@ const RecipeSelectionPage = () => {
 
         selectedRecipes.forEach((recipe) => {
             recipe.ingredients?.forEach((ingredient) => {
-                const quantity = parseFloat(ingredient.quantity) || 0; // Конвертація в число
+                const quantity = parseFloat(ingredient.quantity) || 0; 
                 ingredientsMap.set(ingredient.name, (ingredientsMap.get(ingredient.name) || 0) + quantity);
             });
         });
